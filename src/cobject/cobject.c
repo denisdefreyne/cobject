@@ -3,7 +3,7 @@
 #include <cobject/cobject.h>
 #include <cobject/private.h>
 
-bool COObjectInitialize(void *aObject)
+bool COInitialize(void *aObject)
 {
 	// Create guts
 	((COObject *)aObject)->guts = malloc(sizeof(COGuts));
@@ -17,19 +17,19 @@ bool COObjectInitialize(void *aObject)
 	return true;
 }
 
-void COObjectSetDestructor(void *aObject, CODestructor aDestructor)
+void COSetDestructor(void *aObject, CODestructor aDestructor)
 {
 	// Set destructor
 	((COObject *)aObject)->guts->destructor = aDestructor;
 }
 
-void COObjectRetain(void *aObject)
+void CORetain(void *aObject)
 {
 	// Retain
 	((COObject *)aObject)->guts->referenceCount++;
 }
 
-void COObjectRelease(void *aObject)
+void CORelease(void *aObject)
 {
 	// Release
 	((COObject *)aObject)->guts->referenceCount--;

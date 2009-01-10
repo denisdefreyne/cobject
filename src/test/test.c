@@ -32,8 +32,8 @@ struct MyStruct *MyStructCreate(void)
 	strcpy(newStruct->stuff, "hello world");
 
 	// Init
-	COObjectInitialize(newStruct);
-	COObjectSetDestructor(newStruct, &_MyStructDelete);
+	COInitialize(newStruct);
+	COSetDestructor(newStruct, &_MyStructDelete);
 
 	// Done
 	return newStruct;
@@ -43,14 +43,14 @@ int main(void)
 {
 	struct MyStruct *myStruct = MyStructCreate();
 
-	COObjectRetain(myStruct);
-	COObjectRetain(myStruct);
-	COObjectRetain(myStruct);
+	CORetain(myStruct);
+	CORetain(myStruct);
+	CORetain(myStruct);
 
-	COObjectRelease(myStruct);
-	COObjectRelease(myStruct);
-	COObjectRelease(myStruct);
-	COObjectRelease(myStruct);
+	CORelease(myStruct);
+	CORelease(myStruct);
+	CORelease(myStruct);
+	CORelease(myStruct);
 
 	return 0;
 }

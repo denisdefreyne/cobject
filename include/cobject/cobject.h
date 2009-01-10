@@ -13,11 +13,11 @@ typedef struct _COGuts COGuts;
 typedef void (*CODestructor)(void *aObject);
 
 // Initializing
-bool COObjectInitialize(void *aObject);
-void COObjectSetDestructor(void *aObject, CODestructor aDestructor);
+bool COInitialize(void *aObject);
+void COSetDestructor(void *aObject, CODestructor aDestructor);
 
 // Retaining and releasing
-void COObjectRetain(void *aObject);
-void COObjectRelease(void *aObject);
+void CORetain(void *aObject);
+void CORelease(void *aObject);
 
 #endif
