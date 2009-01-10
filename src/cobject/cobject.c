@@ -11,7 +11,7 @@ bool COObjectInitialize(void *aObject)
 		return false;
 
 	// Initialize
-	((COObject *)aObject)->guts->referenceCount = 0;
+	((COObject *)aObject)->guts->referenceCount = 1;
 
 	// Done
 	return true;
