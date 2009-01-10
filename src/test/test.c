@@ -11,12 +11,11 @@ struct MyStruct
 	char *stuff;
 };
 
-static void _MyStructDelete(struct MyStruct *aStruct)
+static void _MyStructDelete(void *aStruct)
 {
 	puts("destructor called");
 
-	free(aStruct->stuff);
-	free(aStruct);
+	free(((struct MyStruct *)aStruct)->stuff);
 }
 
 struct MyStruct *MyStructCreate(void)
