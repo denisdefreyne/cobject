@@ -1,3 +1,6 @@
+#ifndef __COBJECT_COBJECT_H__
+#define __COBJECT_COBJECT_H__
+
 #include <stdbool.h>
 
 // Object
@@ -16,3 +19,5 @@ void COObjectSetDestructor(void *aObject, CODestructor aDestructor);
 // Retaining and releasing
 void COObjectRetain(void *aObject);
 void COObjectRelease(void *aObject);
+
+#endif
