@@ -36,5 +36,12 @@ void COObjectRelease(void *aObject)
 
 	// Destroy if necessary
 	if(((COObject *)aObject)->guts->referenceCount == 0)
+	{
+		// Call destructor
 		((COObject *)aObject)->guts->destructor(aObject);
+
+		// Destroy object
+		free(((COObject *)aObject)->guts);
+		free((COObject *)aObject);
+	}
 }
