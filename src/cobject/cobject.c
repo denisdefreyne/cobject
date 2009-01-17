@@ -1,7 +1,19 @@
 #include <stdlib.h>
 
 #include <cobject/cobject.h>
-#include <cobject/private.h>
+
+// Object
+struct _COObject
+{
+	COGuts *guts;
+};
+
+// Guts
+struct _COGuts
+{
+	size_t       referenceCount;
+	CODestructor destructor;
+};
 
 bool COInitialize(void *aSelf)
 {
