@@ -10,14 +10,14 @@ typedef struct _COObject COObject;
 typedef struct _COGuts COGuts;
 
 // Destructor
-typedef void (*CODestructor)(void *aObject);
+typedef void (*CODestructor)(void *aSelf);
 
 // Initializing
-bool COInitialize(void *aObject);
-void COSetDestructor(void *aObject, CODestructor aDestructor);
+bool COInitialize(void *aSelf);
+void COSetDestructor(void *aSelf, CODestructor aDestructor);
 
 // Retaining and releasing
-void CORetain(void *aObject);
-void CORelease(void *aObject);
+void CORetain(void *aSelf);
+void CORelease(void *aSelf);
 
 #endif

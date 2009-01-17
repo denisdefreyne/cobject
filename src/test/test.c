@@ -6,16 +6,22 @@
 
 struct MyStruct
 {
+	// Guts
 	COGuts *guts;
 
+	// Contents
 	char *stuff;
 };
 
-static void _MyStructDelete(void *aStruct)
+static void _MyStructDelete(void *aSelf)
 {
 	puts("destructor called");
 
-	free(((struct MyStruct *)aStruct)->stuff);
+	// Cast
+	struct MyStruct *self = (struct MyStruct *)aSelf;
+
+	// Delete contents
+	free(self->stuff);
 }
 
 struct MyStruct *MyStructCreate(void)

@@ -3,45 +3,57 @@
 #include <cobject/cobject.h>
 #include <cobject/private.h>
 
-bool COInitialize(void *aObject)
+bool COInitialize(void *aSelf)
 {
+	// Cast
+	COObject *self = (COObject *)aSelf;
+
 	// Create guts
-	((COObject *)aObject)->guts = malloc(sizeof(COGuts));
-	if(!((COObject *)aObject)->guts)
+	self->guts = malloc(sizeof(COGuts));
+	if(!self->guts)
 		return false;
 
 	// Initialize
-	((COObject *)aObject)->guts->referenceCount = 1;
+	self->guts->referenceCount = 1;
 
 	// Done
 	return true;
 }
 
-void COSetDestructor(void *aObject, CODestructor aDestructor)
+void COSetDestructor(void *aSelf, CODestructor aDestructor)
 {
+	// Cast
+	COObject *self = (COObject *)aSelf;
+
 	// Set destructor
-	((COObject *)aObject)->guts->destructor = aDestructor;
+	self->guts->destructor = aDestructor;
 }
 
-void CORetain(void *aObject)
+void CORetain(void *aSelf)
 {
+	// Cast
+	COObject *self = (COObject *)aSelf;
+
 	// Retain
-	((COObject *)aObject)->guts->referenceCount++;
+	self->guts->referenceCount++;
 }
 
-void CORelease(void *aObject)
+void CORelease(void *aSelf)
 {
+	// Cast
+	COObject *self = (COObject *)aSelf;
+
 	// Release
-	((COObject *)aObject)->guts->referenceCount--;
+	self->guts->referenceCount--;
 
 	// Destroy if necessary
-	if(((COObject *)aObject)->guts->referenceCount == 0)
+	if(self->guts->referenceCount == 0)
 	{
 		// Call destructor
-		((COObject *)aObject)->guts->destructor(aObject);
+		self->guts->destructor(self);
 
 		// Destroy object
-		free(((COObject *)aObject)->guts);
-		free((COObject *)aObject);
+		free(self->guts);
+		free(self);
 	}
 }
