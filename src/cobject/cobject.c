@@ -7,6 +7,7 @@ struct _COObject
 {
 	COGuts *guts;
 };
+typedef struct _COObject COObject;
 
 // Guts
 struct _COGuts

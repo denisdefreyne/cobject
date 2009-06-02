@@ -3,9 +3,6 @@
 
 #include <stdbool.h>
 
-// Object
-typedef struct _COObject COObject;
-
 // Guts
 typedef struct _COGuts COGuts;
 
