@@ -13,6 +13,11 @@ struct MyStruct
 	char *stuff;
 };
 
+struct MyStruct2
+{
+	COGuts *guts;
+};
+
 static void _MyStructDelete(void *aSelf)
 {
 	puts("destructor called");
@@ -45,6 +50,22 @@ struct MyStruct *MyStructCreate(void)
 	return newStruct;
 }
 
+struct MyStruct2 *MyStruct2Create(void)
+{
+	puts("constructor2 called");
+
+	// Create
+	struct MyStruct2 *newStruct = malloc(sizeof(struct MyStruct2));
+	if(!newStruct)
+		return NULL;
+
+	// Init
+	COInitialize(newStruct);
+
+	// Done
+	return newStruct;
+}
+
 int main(void)
 {
 	struct MyStruct *myStruct = MyStructCreate();
@@ -57,6 +78,17 @@ int main(void)
 	CORelease(myStruct);
 	CORelease(myStruct);
 	CORelease(myStruct);
+
+	struct MyStruct2 *myStruct2 = MyStruct2Create();
+
+	CORetain(myStruct2);
+	CORetain(myStruct2);
+	CORetain(myStruct2);
+
+	CORelease(myStruct2);
+	CORelease(myStruct2);
+	CORelease(myStruct2);
+	CORelease(myStruct2);
 
 	return 0;
 }

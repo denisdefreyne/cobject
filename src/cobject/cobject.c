@@ -27,6 +27,7 @@ bool COInitialize(void *aSelf)
 		return false;
 
 	// Initialize
+	self->guts->destructor     = NULL;
 	self->guts->referenceCount = 1;
 
 	// Done
@@ -63,7 +64,8 @@ void CORelease(void *aSelf)
 	if(self->guts->referenceCount == 0)
 	{
 		// Call destructor
-		self->guts->destructor(self);
+		if (self->guts->destructor)
+		  self->guts->destructor(self);
 
 		// Destroy object
 		free(self->guts);
