@@ -14,7 +14,7 @@ bool COInitialize(void *aSelf);
 void COSetDestructor(void *aSelf, CODestructor aDestructor);
 
 // Retaining and releasing
-void CORetain(void *aSelf);
+void *CORetain(void *aSelf);
 void CORelease(void *aSelf);
 
 #endif

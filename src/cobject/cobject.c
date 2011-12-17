@@ -43,13 +43,15 @@ void COSetDestructor(void *aSelf, CODestructor aDestructor)
 	self->guts->destructor = aDestructor;
 }
 
-void CORetain(void *aSelf)
+void *CORetain(void *aSelf)
 {
 	// Cast
 	COObject *self = (COObject *)aSelf;
 
 	// Retain
 	self->guts->referenceCount++;
+
+	return aSelf;
 }
 
 void CORelease(void *aSelf)
