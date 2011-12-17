@@ -56,8 +56,9 @@ void *CORetain(void *aSelf)
 
 void CORelease(void *aSelf)
 {
-	// Cast
 	COObject *self = (COObject *)aSelf;
+	if (!self)
+		return;
 
 	// Release
 	self->guts->referenceCount--;

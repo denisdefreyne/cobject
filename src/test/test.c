@@ -90,5 +90,7 @@ int main(void)
 	CORelease(myStruct2);
 	CORelease(myStruct2);
 
+	CORelease(NULL);
+
 	return 0;
 }
