@@ -17,4 +17,7 @@ void COSetDestructor(void *aSelf, CODestructor aDestructor);
 void *CORetain(void *aSelf);
 void CORelease(void *aSelf);
 
+// Accessing (retain+release)
+#define CO_SET_RR(a, b) { CORetain((b)); CORelease((a)); a = b; }
+
 #endif
