@@ -6,17 +6,24 @@
 // Destructor
 typedef void (*CODestructor)(void *aSelf);
 
+// Class
+struct _COClass
+{
+	struct _COClass *superclass;
+	CODestructor destructor;
+};
+typedef struct _COClass COClass;
+
 // Guts
 typedef struct _COGuts COGuts;
 struct _COGuts
 {
-	size_t       referenceCount;
-	CODestructor destructor;
+	COClass *class;
+	size_t referenceCount;
 };
 
 // Initializing
-void COInitialize(void *aSelf);
-void COSetDestructor(void *aSelf, CODestructor aDestructor);
+void COInitialize(void *aSelf, COClass *aClass);
 
 // Retaining and releasing
 void *CORetain(void *aSelf);

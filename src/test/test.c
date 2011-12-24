@@ -1,96 +1,55 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include <cobject/cobject.h>
 
-struct MyStruct
+void _ModelDestroy(void *aSelf)
 {
-	// Guts
-	COGuts guts;
-
-	// Contents
-	char *stuff;
-};
-
-struct MyStruct2
-{
-	COGuts guts;
-};
-
-static void _MyStructDelete(void *aSelf)
-{
-	puts("destructor called");
-
-	// Cast
-	struct MyStruct *self = (struct MyStruct *)aSelf;
-
-	// Delete contents
-	free(self->stuff);
+	printf("Destroying model %p\n", aSelf);
 }
 
-struct MyStruct *MyStructCreate(void)
+void _BodyDestroy(void *aSelf)
 {
-	puts("constructor called");
-
-	// Create
-	struct MyStruct *newStruct = malloc(sizeof(struct MyStruct));
-	if(!newStruct)
-		return NULL;
-
-	// Create contents
-	newStruct->stuff = malloc(100*sizeof(char));
-	strcpy(newStruct->stuff, "hello world");
-
-	// Init
-	COInitialize(newStruct);
-	COSetDestructor(newStruct, &_MyStructDelete);
-
-	// Done
-	return newStruct;
+	printf("Destroying body %p\n", aSelf);
 }
 
-struct MyStruct2 *MyStruct2Create(void)
+void _AsteroidDestroy(void *aSelf)
 {
-	puts("constructor2 called");
+	printf("Destroying asteroid %p\n", aSelf);
+}
 
-	// Create
-	struct MyStruct2 *newStruct = malloc(sizeof(struct MyStruct2));
-	if(!newStruct)
-		return NULL;
+COType ModelType = {
+	.supertype = NULL,
+	.destructor = &_ModelDestroy
+};
 
-	// Init
-	COInitialize(newStruct);
+COType BodyType = {
+	.supertype = &ModelType,
+	.destructor = &_BodyDestroy
+};
 
-	// Done
-	return newStruct;
+COType AsteroidType = {
+	.supertype = &BodyType,
+	.destructor = &_AsteroidDestroy
+};
+
+struct Asteroid
+{
+	COGuts guts;
+};
+
+struct Asteroid *AsteroidCreate(void)
+{
+	struct Asteroid *asteroid = calloc(1, sizeof (struct Asteroid));
+	COInitialize(asteroid, &AsteroidType);
+
+	return asteroid;
 }
 
 int main(void)
 {
-	struct MyStruct *myStruct = MyStructCreate();
-
-	CORetain(myStruct);
-	CORetain(myStruct);
-	CORetain(myStruct);
-
-	CORelease(myStruct);
-	CORelease(myStruct);
-	CORelease(myStruct);
-	CORelease(myStruct);
-
-	struct MyStruct2 *myStruct2 = MyStruct2Create();
-
-	CORetain(myStruct2);
-	CORetain(myStruct2);
-	CORetain(myStruct2);
-
-	CORelease(myStruct2);
-	CORelease(myStruct2);
-	CORelease(myStruct2);
-	CORelease(myStruct2);
-
-	CORelease(NULL);
+	struct Asteroid *asteroid = AsteroidCreate();
+	CORetain(asteroid);
+	CORelease(asteroid);
+	CORelease(asteroid);
 
 	return 0;
 }

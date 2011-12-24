@@ -1,48 +1,45 @@
 #include <cobject/cobject.h>
 
-// Object
-struct _COObject
+void COInitialize(void *aSelf, COClass *aClass)
 {
-	COGuts guts;
-};
-typedef struct _COObject COObject;
+	COGuts *self = aSelf;
 
-void COInitialize(void *aSelf)
-{
-	COObject *self = aSelf;
-
-	self->guts.destructor     = NULL;
-	self->guts.referenceCount = 1;
-}
-
-void COSetDestructor(void *aSelf, CODestructor aDestructor)
-{
-	COObject *self = aSelf;
-
-	self->guts.destructor = aDestructor;
+	self->class          = aClass;
+	self->referenceCount = 1;
 }
 
 void *CORetain(void *aSelf)
 {
-	COObject *self = aSelf;
+	COGuts *self = aSelf;
+	if (!self)
+		return aSelf;
 
-	self->guts.referenceCount++;
+	self->referenceCount++;
 
 	return aSelf;
 }
 
+static void _CODestroyAsClass(void *aSelf, COClass *aClass)
+{
+	if (!aClass)
+		return;
+
+	if (aClass->destructor)
+		aClass->destructor(aSelf);
+
+	_CODestroyAsClass(aSelf, aClass->superclass);
+}
+
 void CORelease(void *aSelf)
 {
-	COObject *self = aSelf;
+	COGuts *self = aSelf;
 	if (!self)
 		return;
 
-	self->guts.referenceCount--;
-	if(self->guts.referenceCount == 0)
+	self->referenceCount--;
+	if(self->referenceCount == 0)
 	{
-		if (self->guts.destructor)
-		  self->guts.destructor(self);
-
+		_CODestroyAsClass(self, self->class);
 		free(self);
 	}
 }
