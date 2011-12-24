@@ -17,7 +17,7 @@ to `COGuts`, like this:
 	struct foo
 	{
 		// Object guts
-		COGuts *guts;
+		COGuts guts;
 
 		// ... other variables go here ...
 	}

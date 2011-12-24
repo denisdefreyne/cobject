@@ -7,7 +7,7 @@
 struct MyStruct
 {
 	// Guts
-	COGuts *guts;
+	COGuts guts;
 
 	// Contents
 	char *stuff;
@@ -15,7 +15,7 @@ struct MyStruct
 
 struct MyStruct2
 {
-	COGuts *guts;
+	COGuts guts;
 };
 
 static void _MyStructDelete(void *aSelf)
