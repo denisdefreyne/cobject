@@ -1,5 +1,22 @@
 #include <cobject/cobject.h>
 
+#ifdef __GNUC__
+
+void COAutoCleanupError(COGuts *object)
+{
+	fprintf(stderr, "*** CObject: Stack-allocated (auto) variable exits scope with nonzero reference count; destructor was not called.\n");
+	fprintf(stderr, "*** CObject: Break at COAutoCleanupError() to debug.\n");
+}
+
+void COAutoCleanup(void *aObject)
+{
+	COGuts *object = aObject;
+	if (object->referenceCount > 0)
+		COAutoCleanupError(object);
+}
+
+#endif
+
 void *COCreate(COClass *aClass)
 {
 	COGuts *instance = calloc(1, aClass->size);

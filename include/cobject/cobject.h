@@ -26,6 +26,14 @@ struct _COGuts
 	bool isOnHeap;
 };
 
+// Object attribute (GCC only)
+#ifdef __GNUC__
+void COAutoCleanup(void *aObject);
+#define CO_OBJECT __attribute__ (( cleanup(COAutoCleanup) ))
+#else
+#define CO_OBJECT
+#endif
+
 // Creating
 void *COCreate(COClass *aClass);
 void COInit(void *aSelf, COClass *aClass);
