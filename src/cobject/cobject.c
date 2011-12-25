@@ -1,6 +1,14 @@
 #include <cobject/cobject.h>
 
-void COInitialize(void *aSelf, COClass *aClass)
+void *COCreate(COClass *aClass)
+{
+	COGuts *instance = calloc(1, aClass->size);
+	COInit(instance, aClass);
+	instance->isOnHeap = true;
+	return instance;
+}
+
+void COInit(void *aSelf, COClass *aClass)
 {
 	COGuts *self = aSelf;
 
@@ -37,9 +45,10 @@ void CORelease(void *aSelf)
 		return;
 
 	self->referenceCount--;
-	if(self->referenceCount == 0)
+	if (self->referenceCount == 0)
 	{
 		_CODestroyAsClass(self, self->class);
-		free(self);
+		if (self->isOnHeap)
+			free(self);
 	}
 }
