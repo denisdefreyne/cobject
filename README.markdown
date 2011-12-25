@@ -1,71 +1,76 @@
 CObject
 =======
 
-`CObject` is a really simple reference counting implementation that makes
-memory management in C applications and libraries a lot easier.
+_CObject_ is a library that adds support for object-orientation with 
+inheritance, polymorphism, virtual destructors and reference counting to C.
 
 Usage
 -----
 
-`CObject` gives each _object_, which is a struct allocated on the heap, a
-reference count. Each object also has a destructor function pointer; this
-destructor will be called when the reference count reaches zero.
+In _CObject_, an object is a struct allocated on the stack or the heap that 
+starts with a “guts” struct that contains a pointer to the class as well as the 
+reference count. A class is a struct that contains the size of its instances, a 
+reference to the superclass and a function pointer to the destructor that will 
+be called when the reference count reaches zero.
 
-To prepare an object for use with `CObject`, set its first member to a pointer
-to `COGuts`, like this:
+To prepare an object for use with _CObject_, set its first member to `COGuts`, 
+like this:
 
 	struct foo
 	{
-		// Object guts
 		COGuts guts;
 
 		// ... other variables go here ...
+		int *sampleArray;
 	}
 
-When allocating an object on the heap, make sure to initialize it first. This
-will set the reference count of this new object to one. Initializing is done
-using `COInitialize`, which takes a pointer to the object that should be
-initialized as its only argument. For example:
+You will also need a class definition. Classes are `COClass` structs which can 
+be defined like this:
 
-	struct foo *createFoo(void)
+	COClass fooClass = {
+		.destructor = &_fooDestroy,
+		.superclass = NULL
+		.size       = sizeof (struct foo),
+	};
+
+The `destructor` contains a pointer to a function that will be called when the 
+instance will be deleted. This function should not return anything and should 
+take one `void *` as argument, the pointer to the object being deallocated. The 
+destructor should undo anything allocated/retained during initalization. It 
+should not free the struct itself. For instance:
+
+	void fooDestroy(void *foo)
 	{
-		// Allocate object on heap
-		struct foo *newFoo = malloc(sizeof (struct foo));
-
-		// Initialize object
-		COInitialize(newFoo);
-
-		// ... will be continued ...
-
-Next, set its destructor. The destructor is a function that returns nothing
-(`void`) and takes only one argument: the pointer to the object. This pointer
-should be a `void` pointer to prevent compiler warnings. This destructor
-should free the object's content but _not the object itself, and not its guts
-either_. For example:
-
-	void deleteFoo(void *aFoo)
-	{
-		// Cast
-		struct foo *self = (struct foo *)aFoo;
-
-		// Free contents
-		free(self->bar);
-		free(self->baz);
-		free(self->quux);
+		struct foo *fooS = foo;
+		free(sampleArray);
 	}
 
-Setting its destructor happens using `COSetDestructor`, which takes the object
-on which to set a destructor as its first argument, and the pointer to the
-destructor as its second argument. For example:
+The `superclass` contains a pointer to the class definition of the superclass. 
+When an object is deallocated, the destructor of its actual class will be 
+called first, then the destructor of the superclass, and so on until no 
+superclass can be found anymore.
 
-		// ... continued from COInitialize example above ...
+The `size` contains the size of the struct that should be allocated. This is 
+useful for functions that may need to allocate more memory for subclass 
+instances.
 
-		// Set destructor
-		COSetDestructor(newFoo, &deleteFoo);
+Before an object can be used, it needs to be initialized first. This will 
+initialize the reference count to 1, and it will also set the pointer to the 
+given class. This is done using `COInit`, which takes a pointer to the struct 
+(or to the guts, which is the same) and a pointer to the class definition. For 
+example:
 
-		// Return new object
-		return newFoo;
-	}
+	struct foo stackFoo;
+	COInit(&stackFoo, &fooClass);
+
+	struct foo *heapFoo = calloc(1, sizeof (struct foo));
+	COInit(heapFoo, &fooClass);
+
+`COInit` does not fully initialize your object. You will need to do that 
+yourself. For instance:
+
+	stackFoo.sampleArray = calloc(100, sizeof (int);
+	heapFoo->sampleArray = calloc(100, sizeof (int);
 
 At this point, the `CORetain` and `CORelease` functions can be used to retain
 and release objects. When the reference count reaches zero, the destructor
