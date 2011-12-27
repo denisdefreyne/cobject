@@ -63,11 +63,13 @@ example:
 	struct foo stackFoo;
 	COInit(&stackFoo, &fooClass);
 
-	struct foo *heapFoo = calloc(1, sizeof (struct foo));
-	COInit(heapFoo, &fooClass);
+If you are allocating an object on the heap, you _must_ use `COCreate` instead 
+of allocating the object manually and releasing it. For example:
 
-`COInit` does not fully initialize your object. You will need to do that 
-yourself. For instance:
+	struct foo *heapFoo = COCreate(&fooClass);
+
+`COInit` (and `COCreate` which uses it) does not fully initialize your object.
+You will need to do that yourself. For instance:
 
 	stackFoo.sampleArray = calloc(100, sizeof (int);
 	heapFoo->sampleArray = calloc(100, sizeof (int);
