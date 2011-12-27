@@ -42,7 +42,7 @@ should not free the struct itself. For instance:
 	void fooDestroy(void *foo)
 	{
 		struct foo *fooS = foo;
-		free(sampleArray);
+		free(fooS->sampleArray);
 	}
 
 The `superclass` contains a pointer to the class definition of the superclass. 
