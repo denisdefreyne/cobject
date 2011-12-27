@@ -75,8 +75,9 @@ You will need to do that yourself. For instance:
 	heapFoo->sampleArray = calloc(100, sizeof (int);
 
 At this point, the `CORetain` and `CORelease` functions can be used to retain
-and release objects. When the reference count reaches zero, the destructor
-will be called and the object will be freed.
+and release objects. Objects start with a reference count of 1. When the
+reference count reaches zero, the destructor will be called and the object will
+be freed.
 
 Example
 -------
