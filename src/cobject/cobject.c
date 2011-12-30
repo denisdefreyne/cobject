@@ -1,5 +1,7 @@
 #include <cobject/cobject.h>
 
+#include <strings.h>
+
 #ifdef __GNUC__
 
 void COAutoCleanupError(COGuts *object)
@@ -28,6 +30,8 @@ void *COCreate(COClass *aClass)
 void COInit(void *aSelf, COClass *aClass)
 {
 	COGuts *self = aSelf;
+
+	bzero(aSelf, aClass->size);
 
 	self->class          = aClass;
 	self->referenceCount = 1;
