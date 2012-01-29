@@ -29,7 +29,7 @@ be defined like this:
 
 	COClass fooClass = {
 		.destructor = &_fooDestroy,
-		.superclass = NULL
+		.superclass = NULL,
 		.size       = sizeof (struct foo),
 	};
 
@@ -39,10 +39,10 @@ take one `void *` as argument, the pointer to the object being deallocated. The
 destructor should undo anything allocated/retained during initalization. It 
 should not free the struct itself. For instance:
 
-	void fooDestroy(void *foo)
+	static void _fooDestroy(void *sFoo)
 	{
-		struct foo *fooS = foo;
-		free(fooS->sampleArray);
+		struct foo *foo = aFoo;
+		free(foo->sampleArray);
 	}
 
 The `superclass` contains a pointer to the class definition of the superclass. 
@@ -71,13 +71,20 @@ of allocating the object manually and releasing it. For example:
 `COInit` (and `COCreate` which uses it) does not fully initialize your object.
 You will need to do that yourself. For instance:
 
-	stackFoo.sampleArray = calloc(100, sizeof (int);
-	heapFoo->sampleArray = calloc(100, sizeof (int);
+	stackFoo.sampleArray = calloc(100, sizeof (int));
+	heapFoo->sampleArray = calloc(100, sizeof (int));
 
 At this point, the `CORetain` and `CORelease` functions can be used to retain
 and release objects. Objects start with a reference count of 1. When the
-reference count reaches zero, the destructor will be called and the object will
-be freed.
+reference count reaches zero, the destructor will be called and, in case the
+object is located on the heap, the object will be freed.
+
+It is important even for stack-allocated objects that its reference count is 
+zero when the object exits scope because its destructor will not be called 
+otherwise. It is useful for stack-allocated to be marked using `CO_OBJECT`. 
+When using a compiler with GCC extensions (such as GCC itself or Clang), a 
+warning will be emitted when a stack-allocated object exits automatic scope 
+with a nonzero reference count.
 
 Example
 -------
